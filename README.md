@@ -10,53 +10,46 @@ Sockets Links.
 3. Send message to the client and receive the message from the client using the Socket module in
  server .
 4. Send and receive the message using the send function in socket.
+5. 
 ## PROGRAM
 # server:
 
 import socket
 
-HOST = '127.0.0.1'  
-PORT = 65432        
+s=socket.socket()
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
-    server_socket.bind((HOST, PORT))
-    server_socket.listen()
+s.bind(('localhost',8001))
 
-    print(f"Server is listening on {HOST}:{PORT}")
-    while True:
-        conn, addr = server_socket.accept()
-        with conn:
-            print(f"Connected by {addr}")
-            while True:
-                data = conn.recv(1024)
-                if not data:
-                    break
-                conn.sendall(data)
-                print(f"Echoed: {data.decode('utf-8')}")
-                
+s.listen(5)
+
+c,addr=s.accept()
+
+while True:
+
+    ClientMessage=c.recv(1024).decode()
+    
+    c.send(ClientMessage.encode())
+    
 # client:
 
 import socket
 
-HOST = '127.0.0.1'  
-PORT = 65432  
+s=socket.socket()
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client_socket:
-    client_socket.connect((HOST, PORT))
+s.connect(('localhost',8001))
 
-    message = 'Hello, Server!'
-    client_socket.sendall(message.encode('utf-8'))
+while True:
 
-    data = client_socket.recv(1024)
-    print(f"Received echo: {data.decode('utf-8')}")                
+    msg=input("Client > ")
+    
+    s.send(msg.encode())
+    
+    print("Server > ",s.recv(1024).decode())
 
+            
 ## OUTPUT:
 
-# server:
-<img width="398" height="80" alt="Screenshot 2025-09-24 092605" src="https://github.com/user-attachments/assets/92185a98-6d14-4f49-83c6-228d59b045ee" />
-
-# client:
-<img width="306" height="39" alt="Screenshot 2025-09-24 092616" src="https://github.com/user-attachments/assets/0690a62f-e799-420b-a0c5-fbb2f3932ff4" />
+<img width="1744" height="186" alt="Screenshot 2025-10-06 110601" src="https://github.com/user-attachments/assets/edafa9bc-1d47-444b-8242-4eb28555010d" />
 
 ## RESULT
 Thus, the python program for creating Echo Client and Echo Server using TCP Sockets Links 
